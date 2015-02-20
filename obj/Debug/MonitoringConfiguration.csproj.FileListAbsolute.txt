@@ -1,0 +1,11 @@
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringConfiguration.exe.config
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringConfiguration.exe
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringConfiguration.pdb
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.csprojResolveAssemblyReference.cache
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.Config.resources
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.Properties.Resources.resources
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.csproj.GenerateResource.Cache
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.exe
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.pdb
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringModel.dll
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringModel.pdb

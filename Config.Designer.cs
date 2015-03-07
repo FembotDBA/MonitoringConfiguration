@@ -33,6 +33,10 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.lvServers = new System.Windows.Forms.ListView();
             this.btnTask = new System.Windows.Forms.Button();
+            this.lblResult = new System.Windows.Forms.Label();
+            this.lvMonitoredTasks = new BrightIdeasSoftware.ObjectListView();
+            this.colMonitoredTask_Name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            ((System.ComponentModel.ISupportInitialize)(this.lvMonitoredTasks)).BeginInit();
             this.SuspendLayout();
             // 
             // txtConnectionString
@@ -75,7 +79,7 @@
             // 
             // btnTask
             // 
-            this.btnTask.Location = new System.Drawing.Point(42, 289);
+            this.btnTask.Location = new System.Drawing.Point(732, 288);
             this.btnTask.Name = "btnTask";
             this.btnTask.Size = new System.Drawing.Size(75, 23);
             this.btnTask.TabIndex = 5;
@@ -83,11 +87,41 @@
             this.btnTask.UseVisualStyleBackColor = true;
             this.btnTask.Click += new System.EventHandler(this.btnTask_Click);
             // 
+            // lblResult
+            // 
+            this.lblResult.AutoSize = true;
+            this.lblResult.Location = new System.Drawing.Point(366, 330);
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(0, 13);
+            this.lblResult.TabIndex = 6;
+            // 
+            // lvMonitoredTasks
+            // 
+            this.lvMonitoredTasks.AllColumns.Add(this.colMonitoredTask_Name);
+            this.lvMonitoredTasks.CheckBoxes = true;
+            this.lvMonitoredTasks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colMonitoredTask_Name});
+            this.lvMonitoredTasks.Location = new System.Drawing.Point(31, 288);
+            this.lvMonitoredTasks.Name = "lvMonitoredTasks";
+            this.lvMonitoredTasks.ShowGroups = false;
+            this.lvMonitoredTasks.Size = new System.Drawing.Size(359, 287);
+            this.lvMonitoredTasks.TabIndex = 7;
+            this.lvMonitoredTasks.UseCompatibleStateImageBehavior = false;
+            this.lvMonitoredTasks.View = System.Windows.Forms.View.Details;
+            // 
+            // colMonitoredTask_Name
+            // 
+            this.colMonitoredTask_Name.AspectName = "MonitoredTaskName";
+            this.colMonitoredTask_Name.CheckBoxes = true;
+            this.colMonitoredTask_Name.Text = "Monitored Task";
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(846, 615);
+            this.Controls.Add(this.lvMonitoredTasks);
+            this.Controls.Add(this.lblResult);
             this.Controls.Add(this.btnTask);
             this.Controls.Add(this.lvServers);
             this.Controls.Add(this.btnConnect);
@@ -96,6 +130,7 @@
             this.Name = "Config";
             this.Text = "Configuration";
             this.Load += new System.EventHandler(this.Config_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.lvMonitoredTasks)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -108,6 +143,9 @@
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.ListView lvServers;
         private System.Windows.Forms.Button btnTask;
+        private System.Windows.Forms.Label lblResult;
+        private BrightIdeasSoftware.ObjectListView lvMonitoredTasks;
+        private BrightIdeasSoftware.OLVColumn colMonitoredTask_Name;
     }
 }
 

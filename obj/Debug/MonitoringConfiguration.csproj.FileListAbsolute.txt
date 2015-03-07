@@ -9,3 +9,5 @@ D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\Monitoring
 D:\Projects\MonitoringConfiguration\MonitoringConfiguration\obj\Debug\MonitoringConfiguration.pdb
 D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringModel.dll
 D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\MonitoringModel.pdb
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\ObjectListView.dll
+D:\Projects\MonitoringConfiguration\MonitoringConfiguration\bin\Debug\ObjectListView.xml

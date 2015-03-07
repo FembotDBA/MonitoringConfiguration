@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,7 @@ namespace MonitoringConfiguration
 {
     public partial class Config : Form
     {
+        //List<MonitoredTask> monitoredTasks = new List<MonitoredTask>();
         public Config()
         {
             InitializeComponent();
@@ -24,6 +26,45 @@ namespace MonitoringConfiguration
         {
             List<MonitoredServer> monitoredServers = GetMonitoredServers(txtConnectionString.Text);
             FillListView(monitoredServers);
+
+            List<MonitoredTask> monitoredTasks = GetMonitoredTasks(txtConnectionString.Text);
+            lvMonitoredTasks.Objects = monitoredTasks;
+            lvMonitoredTasks.AutoResizeColumns();
+        }
+
+        static List<MonitoredTask> GetMonitoredTasks(string connectionString)
+        {
+            
+            List<MonitoredTask> MonitoredTasks = new List<MonitoredTask>();
+            
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("SELECT MonitoredTaskId, MonitoredTaskName FROM dbo.MonitoredTask", connection))
+                {
+
+                    SqlDataReader reader = command.ExecuteReader();
+                    try
+                    {
+                        while (reader.Read())
+                        {
+                            MonitoredTasks.Add(new MonitoredTask
+                            {
+                                MonitoredTaskId = reader["MonitoredTaskId"].ToString()
+                                ,
+                                MonitoredTaskName = reader["MonitoredTaskName"].ToString()
+                            });
+                        }
+                    }
+                    finally
+                    {
+                        reader.Close();
+                    }
+                }
+            }
+
+            return MonitoredTasks;
         }
 
         private void FillListView(List<MonitoredServer> monitoredServers)
@@ -81,31 +122,42 @@ namespace MonitoringConfiguration
 
         private void btnTask_Click(object sender, EventArgs e)
         {
-            getItemInfo();
+            if (lvMonitoredTasks.CheckedObjects.Count > 0)
+            {
+                //List<MonitoredTask> checkedMonitoredTasks = (List<MonitoredTask>)lvMonitoredTasks.CheckedObjects;
+                ArrayList arrCheckedMonitoredTasks = (ArrayList)lvMonitoredTasks.CheckedObjects;
+                getItemInfo(arrCheckedMonitoredTasks);
+            }
         }
 
-        private void getItemInfo()
+        private void getItemInfo(ArrayList checkedMonitoredTasks)
         {
             //make sure row is selected
             if (lvServers.SelectedItems.Count == 1)
             {
-                runTask(Int32.Parse(lvServers.SelectedItems[0].SubItems[1].Text), lvServers.SelectedItems[0].SubItems[2].Text);
+                foreach (MonitoredTask monitoredTask in checkedMonitoredTasks)
+                {
+                    runTask(Int32.Parse(lvServers.SelectedItems[0].SubItems[1].Text), lvServers.SelectedItems[0].SubItems[2].Text, monitoredTask.MonitoredTaskName);
+                }
             }
         }
 
-        private void runTask(int id, string connString)
+        private void runTask(int id, string connString, string taskName)
         {
 
             string monitoredConnString = Settings.Default.MonitoredDBConnString;
             string sql = "";
             string table = "";
+            string saveproc = "";
 
             DataTable dtResults = new DataTable();
 
             //read sql to execute from db
             using (SqlConnection connMonitorDB = new SqlConnection(monitoredConnString))
             {
-                using (SqlCommand command = new SqlCommand("SELECT MonitoredSQL, DataTable FROM dbo.MonitoredTask WHERE MonitoredTaskName = 'File Latency'", connMonitorDB))
+                //using (SqlCommand command = new SqlCommand("SELECT * FROM dbo.MonitoredTask WHERE MonitoredTaskName = 'File Latency'", connMonitorDB))
+                //using (SqlCommand command = new SqlCommand("SELECT * FROM dbo.MonitoredTask WHERE MonitoredTaskName = 'Error Log'", connMonitorDB))
+                using (SqlCommand command = new SqlCommand("SELECT * FROM dbo.MonitoredTask WHERE MonitoredTaskName = '" + taskName + "'", connMonitorDB))
                 {
                     connMonitorDB.Open();
 
@@ -116,6 +168,7 @@ namespace MonitoringConfiguration
                         {
                             sql = reader["MonitoredSQL"].ToString().Replace("%ServerId%",id.ToString());
                             table = reader["DataTable"].ToString();
+                            saveproc = reader["ProcToSaveData"].ToString();
                         }
                     }
                     finally
@@ -129,15 +182,25 @@ namespace MonitoringConfiguration
             using (SqlConnection connRemote = new SqlConnection(connString))
             {
 
+                
                 using (SqlCommand commTask = new SqlCommand(sql, connRemote))
                 {
-                    connRemote.Open();
+                    try
+                    {
+                        connRemote.Open();
 
-                    SqlDataAdapter da = new SqlDataAdapter(commTask);
 
-                    da.Fill(dtResults);
-                    connRemote.Close();
-                    da.Dispose();
+                        using (SqlDataAdapter da = new SqlDataAdapter(commTask))
+                        {
+
+                            da.Fill(dtResults);
+                            connRemote.Close();
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error connecting to remote host, check connection string, access or firewall.");
+                    }
 
                 }
             }
@@ -147,15 +210,21 @@ namespace MonitoringConfiguration
                 using (SqlCommand commSaveResults = connSaveResults.CreateCommand())
                 {
                     //save results to table
-                    commSaveResults.CommandText = "dbo.SaveFileLatency";
+                    //commSaveResults.CommandText = "dbo.SaveFileLatency";
+                    commSaveResults.CommandText = saveproc;
                     commSaveResults.CommandType = CommandType.StoredProcedure;
 
                     SqlParameter parameter;
-                    parameter = commSaveResults.Parameters.AddWithValue("@fileLatency", dtResults);
+                    parameter = commSaveResults.Parameters.AddWithValue("@datatable", dtResults);
                     parameter.SqlDbType = SqlDbType.Structured;
-                    parameter.TypeName = "data.FileLatency";
+                    //parameter.TypeName = "data.FileLatency";
+                    parameter.TypeName = table;
 
+                    connSaveResults.Open();
                     commSaveResults.ExecuteNonQuery();
+                    connSaveResults.Close();
+
+                    lblResult.Text = "Task Complete.";
                 }
             }
             
